@@ -120,8 +120,6 @@ class Product extends Model
             $callback($products);
         });
     }
-
-
     /*
 
     ### What is Eloquent in Laravel?

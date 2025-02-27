@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
+// the route for the CategoryController
 Route::controller(CategoryController::class) ->prefix('categories')->group(function(){
     Route::get('/', 'getCategories');
     Route::post('/', 'createCategory');
@@ -18,6 +18,8 @@ Route::controller(CategoryController::class) ->prefix('categories')->group(funct
     Route::delete('/{categoryId}', 'deleteCategory');
 });
 
+
+// the route for the ProductController
 Route::controller(ProductController::class) ->prefix('products')->group(function(){
     Route::get('/', 'getProducts');
     Route::post('/', 'createProduct');
