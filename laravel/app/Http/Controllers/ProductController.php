@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     
+
+
+    // Controllers can group related request handling logic into a single class. 
+    // For example, a UserController class might handle all incoming requests 
+    // related to users, including showing, creating, updating, and deleting users. 
+
+    
    // Get /api/products
 
 public function getProducts()
