@@ -5,19 +5,31 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\ArticlesTableSeeder;
+use Database\Seeders\CommentsTableSeeder;
+use Database\Seeders\RatingsTableSeeder;
+use Database\Seeders\AuthorsTableSeeder;
+
 
 class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
      */
+    
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+      
+        $this->call([
+            AuthorsTableSeeder::class,
+            ArticlesTableSeeder::class,
+            CommentsTableSeeder::class,
+            RatingsTableSeeder::class,
         ]);
+       
+
+         
+      
     }
+   
 }
