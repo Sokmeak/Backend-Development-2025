@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Database\Eloquent\Model\Products;
+
+use App\Models\Product;
+
+
 class ProductController extends Controller
 {
     
@@ -14,41 +19,61 @@ class ProductController extends Controller
     // related to users, including showing, creating, updating, and deleting users. 
 
     
-   // Get /api/products
+//    // Get /api/products
 
-public function getProducts()
-{
-    return ["message" => "Getting list of products"];
-}
 
-// Post /api/products
+    public function getProducts()
+    {
+        return response()->json(Product::all());
+    }
 
-public function createProduct()
-{
-    return ["message" => "Creating a new product"];
-}
+    // Post /api/products
+    public function createProduct(Request $request)
+    {
+        // dd($request->all());
+        $product = Product::create($request->all());
+        return response()->json(["message" => "Product created successfully", "product" => $product], 201);
+    }
 
-// Get /api/products/{productId}
+    // Get /api/products/{productId}
+    public function getProduct($productId)
+    {
+        $product = Product::find($productId);
 
-public function getProduct($productId)
-{
-    return ["message" => "Getting a product based on given $productId"];
-}
+        if (!$product) {
+            return response()->json(["message" => "Product not found"], 404);
+        }
 
-// Patch /api/products/{productId}
+        return response()->json($product);
+    }
 
-public function updateProduct($productId)
-{
-    return ["message" => "Updating a product based on given $productId"];
-}
+    // Patch /api/products/{productId}
+    public function updateProduct(Request $request, $productId)
+    {
+        $product = Product::find($productId);
 
-// Delete /api/products/{productId}
+        if (!$product) {
+            return response()->json(["message" => "Product not found"], 404);
+        }
 
-public function deleteProduct($productId)
-{
-    return ["message" => "Deleting a product based on given $productId"];
-}
+        $product->update($request->all());
 
+        return response()->json(["message" => "Product updated successfully", "product" => $product]);
+    }
+
+    // Delete /api/products/{productId}
+    public function deleteProduct($productId)
+    {
+        $product = Product::find($productId);
+
+        if (!$product) {
+            return response()->json(["message" => "Product not found"], 404);
+        }
+
+        $product->delete();
+
+        return response()->json(["message" => "Product deleted successfully"]);
+    }
 
 
 }
