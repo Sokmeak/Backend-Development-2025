@@ -14,11 +14,6 @@ class Category extends Model
     //
     use HasFactory;
     protected $fillable = ['name'];
-
-
-
-
-
 }
 
 // In Laravel, a "model" is a PHP class that represents a database table, allowing developers to interact

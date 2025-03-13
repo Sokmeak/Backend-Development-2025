@@ -14,6 +14,29 @@ class Product extends Model
 
     protected $fillable = ['name', 'pricing', 'category_id', 'discounted', 'active'];
 
+
+    // provide the relationship for the product model
+    
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+
   
 
     ### What is Eloquent in Laravel?
