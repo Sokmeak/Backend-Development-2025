@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Carbon\Carbon;
+//use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -13,6 +14,8 @@ class Order extends Model
     //
     protected $table = 'orders';
     protected $fillable = ['order_date', 'customer_id', 'product_id', 'quantity', 'total_price'];
+
+  //  use LogsActivity; // last Task : enable model logging
 
 // Task 3 : 
     protected function orderDate() : Attribute
@@ -33,6 +36,7 @@ class Order extends Model
 
 
     // Task 4: soft delete
+    use SoftDeletes;
     protected $dates = ['deleted_at'];
 
 
