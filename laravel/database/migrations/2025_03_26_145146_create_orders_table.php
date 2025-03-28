@@ -16,12 +16,13 @@ return new class extends Migration
             $table->timestamp('order_date');
             $table->decimal('total_price', 10, 2); 
             $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('product_id');
+    
             $table->integer('quantity');
             $table->timestamps();
             
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
     
+
        
         });
     

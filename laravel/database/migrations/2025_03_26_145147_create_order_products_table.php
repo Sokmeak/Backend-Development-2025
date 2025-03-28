@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
      
             
+            
         });
     }
 

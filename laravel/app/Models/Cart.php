@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;   
+
 class Cart extends Model
 {
 
     protected $fillable = ['customer_id', 'product_id', 'quantity', 'total'];
+
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
 
 
     public function product()

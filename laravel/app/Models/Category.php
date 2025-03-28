@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 
 
@@ -14,6 +16,8 @@ class Category extends Model
     //
     use HasFactory;
     protected $fillable = ['name'];
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
 }
 
 // In Laravel, a "model" is a PHP class that represents a database table, allowing developers to interact
