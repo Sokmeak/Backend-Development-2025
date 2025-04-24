@@ -1,43 +1,34 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Category;
-use Illuminate\Cache\Repository;
 
 class CategoryController extends Controller
 {
     //
-     // Get /api/categories
+    // Get /api/categories
 
-     public function getCategories()
-     {
-  
+    public function getCategories()
+    {
         $categories = Category::all();
-       
         return response()->json([
         'message' => 'Get all categories success!',
         'data' => $categories,
      ], 200);
-
-    
-
-     }
+    }
  
-     // Post /api/categories
-     public function createCategory(Request $request)
-     {
+    // Post /api/categories
+    public function createCategory(Request $request)
+    {
         // Validate the request
-         $validated = $request->validate([
-            'name' => 'required|string|unique:categories|max:255',
-            // Add other fields as needed
+        $validated = $request->validate([
+           'name' => 'required|string|unique:categories|max:255',
+           // Add other fields as needed
         ]);
-
         try {
             $category = Category::create($validated);
-            
+
             return response()->json([
                 'message' => 'Category created successfully',
                 'category' => $category
@@ -48,49 +39,49 @@ class CategoryController extends Controller
                 'error' => $e->getMessage()
             ], 422); // Use 422 for validation errors
         }
+    }
+ 
+    // Get /api/categories/{categoryId}
+    public function getCategory($categoryId)
+    {
+        $category = Category::find($categoryId);
+ 
+        if (!$category) {
+            return response()->json(["message" => "Category not found"], 404);
         }
  
-     // Get /api/categories/{categoryId}
-     public function getCategory($categoryId)
-     {
-         $category = Category::find($categoryId);
+        return response()->json(["message" => "Get category success", "category" => $category], 200);
+    }
  
-         if (!$category) {
-             return response()->json(["message" => "Category not found"], 404);
-         }
+    // Patch /api/categories/{categoryId}
+    public function updateCategory(Request $request, $categoryId)
+    {
+        $category = Category::find($categoryId);
  
-         return response()->json(["message" => "Get category success", "category" => $category], 200);
-     }
+        if (!$category) {
+            return response()->json(["message" => "Category not found"], 404);
+        }
  
-     // Patch /api/categories/{categoryId}
-     public function updateCategory(Request $request, $categoryId)
-     {
-         $category = Category::find($categoryId);
+        $category->update($request->all());
  
-         if (!$category) {
-             return response()->json(["message" => "Category not found"], 404);
-         }
+        return response()->json(["message" => "Category updated successfully", "category" => $category], 200);
+    }
  
-         $category->update($request->all());
- 
-         return response()->json(["message" => "Category updated successfully", "category" => $category], 200);
-     }
- 
-     // Delete /api/categories/{categoryId}
-     public function deleteCategory($categoryId)
-     {
-         $category = Category::find($categoryId);
+    // Delete /api/categories/{categoryId}
+    public function deleteCategory($categoryId)
+    {
+        $category = Category::find($categoryId);
         
  
-         if (!$category) {
-             return response()->json(["message" => "Category not found"], 404);
-         }
+        if (!$category) {
+            return response()->json(["message" => "Category not found"], 404);
+        }
  
-         $category->delete();
+        $category->delete();
  
-         return response()->json(["message" => "Category deleted successfully"], 200);
-     }
+        return response()->json(["message" => "Category deleted successfully"], 200);
+    }
 
 
-     
+
 }

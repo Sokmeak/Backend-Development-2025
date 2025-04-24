@@ -33,6 +33,7 @@ class CategoryTest extends TestCase
     public function test_if_we_can_access_get_all_categories_api(): void
     {
         
+
     $response = $this->get('/api/categories');
     $response->assertStatus(200)
         ->assertJson([

@@ -16,21 +16,22 @@ use Exception;
 
 class DBSchemaCategoryTest extends TestCase
 {
-  use RefreshDatabase;
-   /**
-     * Description: Verify categories table structure
-     * Precondition: Database migrated
-     * Test Steps: 1. Get columns from categories table
-     *             2. Check for required columns
-     * Test Data: None
-     * Expected Result: Table should have all expected columns
-     * Actual Result: Table has all expected columns
-     * Status: Passed
-     * Remark: None
-     */
+    use RefreshDatabase;
+    /**
+      * Description: Verify categories table structure
+      * Precondition: Database migrated
+      * Test Steps: 1. Get columns from categories table
+      *             2. Check for required columns
+      * Test Data: None
+      * Expected Result: Table should have all expected columns
+      * Actual Result: Table has all expected columns
+      * Status: Passed
+      * Remark: None
+      */
  
     
-     public function test_categories_table_has_expected_columns(){
+    public function test_categories_table_has_expected_columns()
+    {
         $this->assertTrue(
             Schema::hasColumns('categories', [
                 'id', 'name', 'created_at', 'updated_at'
@@ -41,7 +42,7 @@ class DBSchemaCategoryTest extends TestCase
 
 
 
-        /**
+    /**
      * Description: Verify name column constraint
      * Precondition: None
      * Test Steps: 1. Attempt to insert null name
@@ -52,18 +53,31 @@ class DBSchemaCategoryTest extends TestCase
      * Remark: None
      */
 
-     public function test_name_column_cannot_be_null()
-     {
-         $this->expectException(QueryException::class);
+    public function test_name_column_cannot_be_null()
+    {
+        /*
+
+        It registers what exception you're expecting with expectException(...)
+
+        Then it runs the rest of the test
+
+        If the exception does happen, the test passes ✅
+
+        If the exception does not happen, or it’s a different exception, the test fails ❌
+        */
+        
+        $this->expectException(QueryException::class);
+        Category::create([
+            'name' => null,
+           
+        ]);
+       
  
-         Category::create([
-             'name' => null,
-            
-         ]);
-     }
+       
+    }
  
 
-        /**
+    /**
      * Description: Verify name column accepts only strings
      * Precondition: Database migrated
      * Test Steps: 1. Attempt to insert non-string name via Eloquent
@@ -75,34 +89,38 @@ class DBSchemaCategoryTest extends TestCase
      * Remark: Depends on DB column type (e.g., VARCHAR)
      */
 
-     public function test_name_column_accepts_only_strings()
+    public function test_name_column_accepts_only_strings()
     {
-//     $validator = Validator::make(
-//         ['name' => 123],
-//         ['name' => 'string'] // Validation rule
-//     );
+        //     $validator = Validator::make(
+        //         ['name' => 123],
+        //         ['name' => 'string'] // Validation rule
+        //     );
 
-//     $this->assertFalse($validator->passes());
-//     $this->assertStringContainsString('must be a string', $validator->errors()->first('name'));
+        //     $this->assertFalse($validator->passes());
+        //     $this->assertStringContainsString('must be a string', $validator->errors()->first('name'));
 
-// Attempt to insert an invalid value (non-string)
-    try {
-        DB::table('categories')->insert([
-            'name' => 123, //  to insert an integer
-        ]);
-    } catch (Exception $e) {
-        // Catch the exception thrown due to invalid data type
-        $this->assertTrue(true);  // Test passes if an exception occurs
-        return;
+        // Attempt to insert an invalid value (non-string)
+        try {
+            DB::table('categories')->insert([
+                'name' => 123, //  to insert an integer
+            ]);
+        } catch (Exception $e) {
+            // Catch the exception thrown due to invalid data type
+            $this->assertTrue(true);  // Test passes if an exception occurs
+            return;
+        }
+
+        // DB::table('categories')->insert([
+        //   'name' => 123, //  to insert an integer
+        //     ]);
+
+        // Fail the test if no exception is thrown (meaning the database did not enforce the constraint)
+        $this->fail('Database did not enforce string constraint for the name column.');
+
+
     }
 
-// Fail the test if no exception is thrown (meaning the database did not enforce the constraint)
-    $this->fail('Database did not enforce string constraint for the name column.');
-
-
-}
 
 
 
-    
 }
