@@ -8,8 +8,15 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
     zip \
-    unzip
+    unzip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd pdo_mysql mbstring exif pcntl bcmath \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

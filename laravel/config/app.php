@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+ 
 
     /*
     |--------------------------------------------------------------------------
@@ -40,6 +41,14 @@ return [
     */
 
     'debug' => (bool) env('APP_DEBUG', false),
+
+    // 'providers' => [
+    //     // ...
+    //     Intervention\Image\ImageServiceProvider::class,
+    // ],
+    // 'aliases' => [
+    //     'Image' => Intervention\Image\Facades\Image::class,
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +131,10 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+
+
+ 
+
 
 ];
