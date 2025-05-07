@@ -30,9 +30,13 @@ Route::get('/upload_file', function () {
 Route::post('/upload', [UploadController::class,'upload'])->name('upload');
 
 
-Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
-Route::post('/gallery', [GalleryController::class, 'store'])->name('gallery.store');
-Route::delete('/gallery/{image}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
+// Route::get('/gallery', action: [GalleryController::class, 'index'])->name('gallery.index');
+
+Route::get('/gallery', function () {
+    return view('gallery/index');
+
+});
+Route::post('/gallery', [GalleryController::class, 'upload'])->name('upload');
 
 
 
