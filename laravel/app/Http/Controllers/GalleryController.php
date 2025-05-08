@@ -62,56 +62,82 @@ class GalleryController extends Controller
 
     public function upload(Request $request)
     {
+        
+
         $request->validate([
             'document' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
     
-        // Store to local 'public' disk
-        $path = $request->file('document')->store('uploads');
-
-        // Store to minio
         $file = $request->file('document');
-        $fileName = basename($path);
-
-        $minioPath = false;
-        if (Storage::disk('minio')->putFileAs('uploads', $file, $fileName)) {
-            $minioPath = 'uploads/' . $fileName;
+        $fileName = Str::random(40) . '.' . $file->getClientOriginalExtension();
+    
+        // Store original to local
+        $localPath = $file->storeAs('uploads', $fileName, 'public');
+    
+        // Store original to minio
+        $minioSuccess = Storage::disk('minio')->putFileAs('uploads', $file, $fileName);
+    
+        $minioPath = $minioSuccess ? 'uploads/' . $fileName : null;
+    
+        // Initialize thumbnail path as null
+        $thumbnailPath = null;
+    
+        // If the file is an image, create a thumbnail
+        if (in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png'])) {
+            $thumb = InterventionImage::make($file->getRealPath())
+                ->fit(200, 200, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->encode();
+    
+            $thumbnailFileName = 'thumb_' . $fileName;
+            $thumbnailPath = 'uploads/thumbnails/' . $thumbnailFileName;
+    
+            // Store thumbnail to minio
+            Storage::disk('minio')->put($thumbnailPath, $thumb);
         }
     
         return response()->json([
-            'local_path' => $path,
+            'local_path' => $localPath,
             'minio_path' => $minioPath,
-        ], 200);
+            'minio_thumbnail' => $thumbnailPath,
+        ]);
     }
     
 
     public function store(Request $request)
     {
+      
         $request->validate([
-        'image' => 'required|image|max:2048' // Validation rules for upload
+            'image' => 'required|image|max:2048'
         ]);
-        
+
         $image = $request->file('image');
-        $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
-        $path = $image->storeAs('uploads', $fileName); // Store the original image
-        // (Optional) Using Intervention Image
-        $thumbnailPath = 'thumbnails/' . $fileName;
+        $fileName = Str::random(40) . '.' . $image->getClientOriginalExtension();
 
-        // can use it
-        $intervention = InterventionImage::make($image->getRealPath());
+        // Store original image to 'uploads' folder in 'minio' disk
+        $originalPath = $image->storeAs('uploads', $fileName, 'minio');
+
+        // Create a thumbnail using Intervention Image
+        $thumbnail = InterventionImage::make($image->getRealPath())
+            ->fit(200, 200, function ($constraint) {
+                $constraint->aspectRatio();
+            })->encode(); // encode as original format
+
+        // Define thumbnail path
+        $thumbnailPath = 'uploads/thumbnails/' . $fileName;
+
+        // Store thumbnail to 'minio'
+        Storage::disk('minio')->put($thumbnailPath, $thumbnail);
+
+        // Save paths to database
+        Image::create([
+            'original_path' => $originalPath,
+            'thumbnail_path' => $thumbnailPath,
+        ]);
+
+        return redirect()->route('gallery.index')->with('success', 'Image and thumbnail uploaded.');
 
 
-     
-        $intervention->fit(200, 200, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save(storage_path('app/' . $thumbnailPath));
 
-     
-        // (Alternative) Using pure Imagick
-        //  $imagick = new Imagick(storage_path('app/uploads/' . $fileName));
-        //  $imagick->resizeImage(200, 200, Imagick::FILTER_TRIANGLE, 1);
-        //  $imagick->writeImage(storage_path('app/thumbnails/' . $fileName));
-        // Update your Image model to store original and thumbnail paths
-        return redirect()->route('gallery.index')->with('success', 'Image uploaded');
     }
 }
